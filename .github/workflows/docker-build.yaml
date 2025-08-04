@@ -34,18 +34,18 @@ jobs:
       - name: Build Docker image
         run: |
           echo 'Buildování Docker image...'
-          docker build -t \${{ env.IMAGE_NAME }}:latest .
-          docker build -t \${{ env.IMAGE_NAME }}:\${{ github.sha }} .
+          docker build -t ${{ env.IMAGE_NAME }}:latest .
+          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} .
 
       - name: Test Docker container
         run: |
           echo 'Testování Docker kontejneru...'
-          docker run --rm \${{ env.IMAGE_NAME }}:latest
+          docker run --rm ${{ env.IMAGE_NAME }}:latest
 
       - name: List Docker images
         run: |
           echo 'Seznam vytvořených images:'
-          docker images | grep \${{ env.IMAGE_NAME }}
+          docker images | grep ${{ env.IMAGE_NAME }}
           
           
   deploy-to-ecr:
@@ -94,11 +94,11 @@ jobs:
 
       - name: Build and push Docker image to ECR
         run: |
-          ECR_URL=\${{ steps.ecr-url.outputs.ecr_url }}
+          ECR_URL=${{ steps.ecr-url.outputs.ecr_url }}
           docker build -t $ECR_URL:latest .
-          docker build -t $ECR_URL:\${{ github.sha }} .
+          docker build -t $ECR_URL:${{ github.sha }} .
           echo "Pushing images to ECR..."
           docker push $ECR_URL:latest
-          docker push $ECR_URL:\${{ github.sha }}
+          docker push $ECR_URL:${{ github.sha }}
           echo "✅ Images pushed successfully!"
           echo "Repository URL: $ECR_URL"          
